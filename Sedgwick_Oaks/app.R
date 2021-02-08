@@ -2,9 +2,17 @@
 
 library(shiny)
 library(tidyverse)
+library(bslib)
+
+sedgwick_theme <- bs_theme(
+  bg = "white",
+  fg = "#1E8449",
+  primary = "#F39C12",
+  base_font = font_google("Georgia")
+)
 
 # Define UI for our application
-ui <- fluidPage(
+ui <- fluidPage(theme = sedgwick_theme,
 
     navbarPage("Sedgwick Oaks",
                tabPanel("Overview"),
