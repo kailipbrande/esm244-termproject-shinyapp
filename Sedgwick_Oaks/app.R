@@ -1,3 +1,4 @@
+kb-branch
 
 
 library(shiny)
@@ -33,9 +34,13 @@ ui <- fluidPage(theme = sedgwick_theme,
                             mainPanel("2020 Distribution")
                         )
                         ),
-               tabPanel("Widget 2",
+                tabPanel("Widget 2",
                         sidebarLayout(
-                            sidebarPanel("Select Year"),
+                            sidebarPanel("Select Year",
+                                         checkboxGroupInput(inputId = "pick_year",
+                                                            label = "Select study year:",
+                                                            choices = unique(sedgwick$jan38))
+                                         ),
                             mainPanel("Species Distribution")
                         )
                         ),
