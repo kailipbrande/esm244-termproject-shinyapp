@@ -8,7 +8,7 @@ sedgwick_theme <- bs_theme(
   bg = "white",
   fg = "#1E8449",
   primary = "#F39C12",
-  base_font = font_google("Georgia")
+  base_font = font_google("Jomhuria")
 )
 
 # Define UI for our application
