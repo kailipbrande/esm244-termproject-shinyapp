@@ -41,18 +41,39 @@ ui <- fluidPage(theme = sedgwick_theme,
                         ),
                tabPanel("Widget 3",
                         sidebarLayout(
-                            sidebarPanel("Select Year"),
+                            sidebarPanel("Select Year",
+                                         selectInput("select", label = h3("Select Year"),
+                                                     choices = list("1938" = 1938, "1943" = 1943, "1954" = 1954,
+                                                                    "1967" = 1967, "1980" = 1980, "1994" = 1994,
+                                                                    "2004" = 2004, "2012" = 2012, "2014" = 2014,
+                                                                    "2016" = 2016, "2018" = 2018, "2020" = 2020),
+                                                     selected = 1),
+
+                                         hr(),
+                                         fluidRow(column(12, verbatimTextOutput("value")))
+
+                            ),
                             mainPanel("Number of live individuals")
                         )
                         ),
                tabPanel("Widget 4",
                         sidebarLayout(
-                            sidebarPanel("Select time period"),
-                            mainPanel("Number of live individuals")
-                        )
-                        )
+                            sidebarPanel("Select Time Period",
+                                                  sliderInput("slider2", label = h3("Slider Range"), min = 1938,
+                                                     max = 2020, value = c(1938, 2020), # sep = c(1938, 1943,
+                                                        # 1954, 1967, 1980, 1994, 2004, 2012, 2014, 2016, 2018, 2020)),
+                                                        format = "####"),
 
-    )
+                                                      hr(),
+
+                        fluidRow(
+                          column(12, verbatimTextOutput("value")),
+                          column(12, verbatimTextOutput("range"))
+                        )
+                            ),
+                            mainPanel("Number of live individuals"))
+)
+)
 )
 
 # Define server
