@@ -3,6 +3,9 @@
 library(shiny)
 library(tidyverse)
 library(bslib)
+library(here)
+
+sedgwick <- read_csv(here("treedat_1220.csv"))
 
 sedgwick_theme <- bs_theme(
   bg = "white",
@@ -35,7 +38,11 @@ ui <- fluidPage(theme = sedgwick_theme,
                         ),
                tabPanel("Widget 2",
                         sidebarLayout(
-                            sidebarPanel("Select Year"),
+                            sidebarPanel("Select Year",
+                                         checkboxGroupInput(inputId = "pick_year",
+                                                            label = "Select study year:",
+                                                            choices = unique(sedgwick$jan38))
+                                         ),
                             mainPanel("Species Distribution")
                         )
                         ),
