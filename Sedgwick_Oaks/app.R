@@ -1,15 +1,17 @@
-kb-branch
-
-
 library(shiny)
 library(tidyverse)
 library(bslib)
+library(here)
+
+sedgwick <- read_csv(here("treedat_1220.csv"))
 
 sedgwick_theme <- bs_theme(
   bg = "white",
   fg = "#1E8449",
   primary = "#F39C12",
   base_font = font_google("Noto Sans")
+
+
 )
 
 # Define UI for our application
@@ -30,7 +32,13 @@ ui <- fluidPage(theme = sedgwick_theme,
                         ),
                tabPanel("Widget 1",
                         sidebarLayout(
-                            sidebarPanel("Species"),
+                            sidebarPanel("Species",
+                                         radioButtons(inputId = "radio", label = "Select Species:",
+                                                      choices = list("Valley Oak" = 1, "Blue Oak" = 2, "Coast Live Oak" = 3),
+                                                      selected = 1),
+
+                                         hr(),
+                                         fluidRow(column(3, verbatimTextOutput("value")))),
                             mainPanel("2020 Distribution")
                         )
                         ),
@@ -56,7 +64,6 @@ ui <- fluidPage(theme = sedgwick_theme,
 
                                          hr(),
                                          fluidRow(column(12, verbatimTextOutput("value")))
-
                             ),
                             mainPanel("Number of live individuals")
                         )
