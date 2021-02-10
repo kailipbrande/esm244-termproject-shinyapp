@@ -10,7 +10,10 @@ sedgwick_theme <- bs_theme(
   fg = "#1E8449",
   primary = "#F39C12",
   base_font = font_google("Noto Sans")
+<<<<<<< HEAD
 
+=======
+>>>>>>> a2fa3bee35b128775efe52241d2d20742f6e9e83
 )
 
 # Define UI for our application
