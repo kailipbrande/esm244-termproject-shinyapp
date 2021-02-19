@@ -55,3 +55,5 @@ tree_data_app <- tree_data_app %>%
 # also convert lat and long columns to spatial coordinates
 
 tree_spatial <- st_as_sf(tree_data_app, coords = c("POINT_X", "POINT_Y"), crs = 4326)
+
+
