@@ -1,5 +1,5 @@
 
-=======
+# =======
 library(shiny)
 library(tidyverse)
 library(bslib)
@@ -73,10 +73,13 @@ ui <- fluidPage(theme = sedgwick_theme,
                tabPanel("Widget 4",
                         sidebarLayout(
                             sidebarPanel("Select Time Period",
-                                                  sliderInput("slider2", label = h3("Slider Range"), min = 1938,
-                                                     max = 2020, value = c(1938, 2020), # sep = c(1938, 1943,
-                                                        # 1954, 1967, 1980, 1994, 2004, 2012, 2014, 2016, 2018, 2020)),
-                                                        format = "####"),
+                                                  sliderInput(inputId = "slider2", label = h3("Slider Range"),
+                                                              min = 1938, max = 2020,
+                                                              value = c(1938, 2020),
+                                                              sep = "", ticks = TRUE,
+                                                              # step = c(1938, 1943,
+                                                              #   1954, 1967, 1980, 1994, 2004, 2012, 2014, 2016, 2018, 2020),
+                                                              format = "####"),
 
                                                       hr(),
 

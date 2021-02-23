@@ -120,3 +120,4 @@ ggplot() +
   geom_sf(data = sb_county) +
   geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
   theme_minimal()
+
