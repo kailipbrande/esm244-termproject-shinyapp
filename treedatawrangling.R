@@ -60,27 +60,63 @@ tree_data_app$POINT_X <- as.numeric(tree_data_app$POINT_X)
 tree_data_app$POINT_Y <- as.numeric(tree_data_app$POINT_Y)
 
 
-# also convert lat and long columns to spatial coordinates
-tree_spatial <- st_as_sf(tree_data_app, coords = c("POINT_X", "POINT_Y"), crs = 4326)
+# with help from this stackoverflow forum (https://stackoverflow.com/questions/52508902/convert-utm-to-lat-long-or-vice-versa), I realzied I have to convert the lat long to utm following this order
+tree_spatial = SpatialPoints(cbind(tree_data_app$POINT_X, tree_data_app$POINT_Y), proj4string=CRS("+proj=utm +zone=10 +datum=WGS84"))
+
+# then converting it to an sp and data frame
+tree_spatial_transform = spTransform(tree_spatial, CRS("+proj=longlat +datum=WGS84")) %>%  as.data.frame()
+
+# then cbinding it to the original tree_data_app and removing our old "PointX" & "Point Y" and renaming our new UTM coordinates
+tree_spatial_latlong<- cbind(tree_data_app,tree_spatial_transform) %>%
+  rename(lat = coords.x1, long = coords.x2) %>%
+  select(-POINT_X, -POINT_Y)
+
+## converting the lat long to crs 4326
+tree_spatial_cord <- st_as_sf(tree_spatial_latlong, coords = c("lat", "long"), crs = 4326)
+
 
 # reading in CA counties data from lab 6
 ca_counties <- read_sf(here("Sedgwick_Oaks", "ca_counties"), layer = "CA_Counties_TIGER2016") %>%
   clean_names() %>%
   select(name)
 
-# transform ca_counties to 4326 so its the same as tree_spatial
-ca_counties <- st_transform(ca_counties, st_crs(tree_spatial)) # transformed
-st_crs(ca_counties) # now its "EPSG", 4326
+# transform ca_counties to 4326 so its the same as tree_spatial_cord
+ca_counties <- st_transform(ca_counties, st_crs(tree_spatial_cord)) # transformed
+#st_crs(ca_counties) # now its "EPSG", 4326
 
-#lets just isolate for SB county since that's where Sedwick is
+#lets just isolate for SB county since that's where Sedgwick is
 sb_county <- ca_counties %>%
   filter(name == "Santa Barbara")
 
-sb_depth <- tree_spatial %>%
+sb_depth <- tree_spatial_cord %>%
   st_intersection(sb_county)
 
 # plot to take a look
 ggplot() +
   geom_sf(data = sb_county) +
-  geom_sf(data = tree_spatial, aes(color = species))
+  geom_sf(data = tree_spatial_cord, aes(color = TAG0305))
 
+
+## Map of Sedgwick in California
+a <- c(-120.040650)
+b <- c(34.692710)
+lat_long_sedgwick <- data.frame(a,b) %>%
+  rename(lat = a, long = b) %>%
+  mutate(lat = as.numeric(lat),
+         long = as.numeric(long)) %>%
+  st_as_sf(coords = c("lat", "long"), crs = 4326) %>%
+  mutate(Site = c("Sedgwick"))
+
+ca_counties <- st_transform(ca_counties, st_crs(lat_long_sedgwick))
+
+## Sedgwick's location in the state
+ggplot() +
+  geom_sf(data = ca_counties) +
+  geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
+  theme_minimal()
+
+## ## Sedgwick's location in the county
+ggplot() +
+  geom_sf(data = sb_county) +
+  geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
+  theme_minimal()
