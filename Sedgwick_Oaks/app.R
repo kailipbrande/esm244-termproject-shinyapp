@@ -1,5 +1,5 @@
 
-=======
+
 library(shiny)
 library(tidyverse)
 library(bslib)
@@ -21,13 +21,12 @@ ui <- fluidPage(theme = sedgwick_theme,
 
     navbarPage("Sedgwick Oaks",
                tabPanel("Overview",
+                        titlePanel("Overview"),
                         sidebarLayout(
-                          sidebarPanel("This dataset is sourced from UCSB's Sedgwick Reserve,
-                                       accessed with permission from professor Frank Davis at
-                                       the La Kretz Research Center. This is a long-term dataset
-                                       spanning over 80 years, containing demographic information
-                                       about Sedgwick's resident oak population from 1938-2020."),
+                          sidebarPanel(),
                           mainPanel(
+                            h1("Summary"),
+                            p("This dataset is sourced from UCSB's Sedgwick Reserve, accessed with permission from professor Frank Davis at the La Kretz Research Center. This is a long-term dataset spanning over 80 years, containing demographic information about Sedgwick's resident oak population from 1938-2020."),
                         img(src = "sedgwickmap1.jpg", height = '500px', width = '800px')
                           )
                         )
@@ -89,6 +88,8 @@ ui <- fluidPage(theme = sedgwick_theme,
 )
 )
 )
+
+
 
 # Define server
 server <- function(input, output) {}
