@@ -1,3 +1,5 @@
+
+=======
 library(tidyverse)
 library(lubridate)
 library(readr)
@@ -45,15 +47,18 @@ tree_data_app <- tree_data_app %>%
 tree_data_app$POINT_X <- stringr::str_replace(tree_data_app$POINT_X, 'NA9', '')
 tree_data_app$POINT_X <- stringr::str_replace(tree_data_app$POINT_X, 'NA', '')
 
-tree_data_app$POINT_Y <- stringr::str_replace(tree_data_app$POINT_X, 'NA9', '')
-tree_data_app$POINT_Y <- stringr::str_replace(tree_data_app$POINT_X, 'NA', '')
+tree_data_app$POINT_Y <- stringr::str_replace(tree_data_app$POINT_Y, 'NA9', '')
+tree_data_app$POINT_Y <- stringr::str_replace(tree_data_app$POINT_Y, 'NA', '')
 
 tree_data_app <- tree_data_app %>%
   drop_na()
 
 #need to convert point x and y to numeric values to then be able to convert to coordinates
-tree_data_app <- tree_data_app %>%
-  mutate(POINT_X = as.numeric(POINT_X), POINT_Y = as.numeric(POINT_Y))
+options(digits = 11) # this is so converting to a numeric value keeps the post-decimal value
+tree_data_app$POINT_X <- as.numeric(tree_data_app$POINT_X)
+
+tree_data_app$POINT_Y <- as.numeric(tree_data_app$POINT_Y)
+
 
 # also convert lat and long columns to spatial coordinates
 tree_spatial <- st_as_sf(tree_data_app, coords = c("POINT_X", "POINT_Y"), crs = 4326)
@@ -78,3 +83,4 @@ sb_depth <- tree_spatial %>%
 ggplot() +
   geom_sf(data = sb_county) +
   geom_sf(data = tree_spatial, aes(color = species))
+
