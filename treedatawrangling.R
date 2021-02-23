@@ -1,8 +1,12 @@
+
+=======
 library(tidyverse)
 library(lubridate)
 library(readr)
 library(sf)
 library(stringr)
+library(janitor)
+library(here)
 
 
 tree_data <- read_csv("treedat_1220.csv")
@@ -49,6 +53,7 @@ tree_data_app$POINT_Y <- stringr::str_replace(tree_data_app$POINT_Y, 'NA', '')
 tree_data_app <- tree_data_app %>%
   drop_na()
 
+#need to convert point x and y to numeric values to then be able to convert to coordinates
 options(digits = 11) # this is so converting to a numeric value keeps the post-decimal value
 tree_data_app$POINT_X <- as.numeric(tree_data_app$POINT_X)
 
@@ -56,7 +61,26 @@ tree_data_app$POINT_Y <- as.numeric(tree_data_app$POINT_Y)
 
 
 # also convert lat and long columns to spatial coordinates
-
 tree_spatial <- st_as_sf(tree_data_app, coords = c("POINT_X", "POINT_Y"), crs = 4326)
 
+# reading in CA counties data from lab 6
+ca_counties <- read_sf(here("Sedgwick_Oaks", "ca_counties"), layer = "CA_Counties_TIGER2016") %>%
+  clean_names() %>%
+  select(name)
+
+# transform ca_counties to 4326 so its the same as tree_spatial
+ca_counties <- st_transform(ca_counties, st_crs(tree_spatial)) # transformed
+st_crs(ca_counties) # now its "EPSG", 4326
+
+#lets just isolate for SB county since that's where Sedwick is
+sb_county <- ca_counties %>%
+  filter(name == "Santa Barbara")
+
+sb_depth <- tree_spatial %>%
+  st_intersection(sb_county)
+
+# plot to take a look
+ggplot() +
+  geom_sf(data = sb_county) +
+  geom_sf(data = tree_spatial, aes(color = species))
 
