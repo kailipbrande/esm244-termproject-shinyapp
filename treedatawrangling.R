@@ -43,14 +43,17 @@ tree_data_app <- tree_data_app %>%
 tree_data_app$POINT_X <- stringr::str_replace(tree_data_app$POINT_X, 'NA9', '')
 tree_data_app$POINT_X <- stringr::str_replace(tree_data_app$POINT_X, 'NA', '')
 
-tree_data_app$POINT_Y <- stringr::str_replace(tree_data_app$POINT_X, 'NA9', '')
-tree_data_app$POINT_Y <- stringr::str_replace(tree_data_app$POINT_X, 'NA', '')
+tree_data_app$POINT_Y <- stringr::str_replace(tree_data_app$POINT_Y, 'NA9', '')
+tree_data_app$POINT_Y <- stringr::str_replace(tree_data_app$POINT_Y, 'NA', '')
 
 tree_data_app <- tree_data_app %>%
   drop_na()
 
-tree_data_app <- tree_data_app %>%
-  mutate(POINT_X = as.numeric(POINT_X), POINT_Y = as.numeric(POINT_Y))
+options(digits = 11) # this is so converting to a numeric value keeps the post-decimal value
+tree_data_app$POINT_X <- as.numeric(tree_data_app$POINT_X)
+
+tree_data_app$POINT_Y <- as.numeric(tree_data_app$POINT_Y)
+
 
 # also convert lat and long columns to spatial coordinates
 
