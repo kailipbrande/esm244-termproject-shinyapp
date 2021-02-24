@@ -1,3 +1,5 @@
+
+# =======
 library(shiny)
 library(tidyverse)
 library(bslib)
@@ -19,17 +21,21 @@ ui <- fluidPage(theme = sedgwick_theme,
 
     navbarPage("Sedgwick Oaks",
                tabPanel("Overview",
-                          titlePanel("Overview"),
+                        sidebarLayout(
+                          sidebarPanel("This dataset is sourced from UCSB's Sedgwick Reserve,
+                                       accessed with permission from professor Frank Davis at
+                                       the La Kretz Research Center. This is a long-term dataset
+                                       spanning over 80 years, containing demographic information
+                                       about Sedgwick's resident oak population from 1938-2020."),
                           mainPanel(
-                            p("This dataset is sourced from UCSB's Sedgwick Reserve, accessed with permission from professor Frank Davis at the La Kretz Research Center. This is a long-term dataset spanning over 80 years, containing demographic information about Sedgwick's resident oak population from 1938-2020."),
-                            img(src = "sedgwickmap1.jpg", height = '500px', width = '800px'),
-
-
-                        )),
+                        img(src = "sedgwickmap1.jpg", height = '500px', width = '800px')
+                          )
+                        )
+                        ),
                tabPanel("Widget 1",
                         sidebarLayout(
-                            sidebarPanel(
-                                         radioButtons(inputId = "tree_species", label = "Select Species:",
+                            sidebarPanel("Species",
+                                         radioButtons(inputId = "radio", label = "Select Species:",
                                                       choices = list("Valley Oak" = 1, "Blue Oak" = 2, "Coast Live Oak" = 3),
                                                       selected = 1),
 
@@ -43,9 +49,10 @@ ui <- fluidPage(theme = sedgwick_theme,
                             sidebarPanel("Select Year",
                                          checkboxGroupInput(inputId = "pick_year",
                                                             label = "Select study year:",
-                                                            choices = unique(sedgwick$jan38))
+                                                            choices = unique(tree_pivot$year))
                                          ),
-                            mainPanel("Species Distribution")
+                            mainPanel("Species Distribution",
+                                      plotOutput("widget2plot"))
                         )
                         ),
                tabPanel("Widget 3",
@@ -87,10 +94,25 @@ ui <- fluidPage(theme = sedgwick_theme,
 )
 )
 
-
-
 # Define server
-server <- function(input, output) {}
+server <- function(input, output) {
+
+  widget2reactive <- reactive({
+    tree_pivot %>%
+      filter(year %in% input$pick_year)
+
+  })
+
+    output$widget2plot <- renderPlot(
+      ggplot() +
+        geom_sf(data = sb_county) +
+        geom_sf(data = widget2reactive(), aes(fill = species, color = species)) +
+        theme_minimal()
+
+
+
+    )
+}
 
 
 # Run the application
