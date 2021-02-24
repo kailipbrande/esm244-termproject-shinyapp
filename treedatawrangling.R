@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 
-=======
 library(tidyverse)
 library(lubridate)
 library(readr)
@@ -8,6 +6,8 @@ library(sf)
 library(stringr)
 library(janitor)
 library(here)
+library(rgdal)
+
 
 
 tree_data <- read_csv("treedat_1220.csv")
@@ -121,6 +121,7 @@ ggplot() +
   geom_sf(data = sb_county) +
   geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
   theme_minimal()
+
 
 ## changing those year columns to as.characters to pivot longer
 as.character(names(tree_spatial_cord)[4:15])
@@ -302,4 +303,4 @@ is_alive <- function(data, x) {
 # testing it
 
 is_alive(data = tree_spatial_cord_updated_years, x = tree_spatial_cord_updated_years[])
->>>>>>> origin
+
