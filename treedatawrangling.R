@@ -3,10 +3,12 @@
 library(tidyverse)
 library(lubridate)
 library(readr)
+library(sp)
 library(sf)
 library(stringr)
 library(janitor)
 library(here)
+library(rgdal)
 
 
 tree_data <- read_csv("treedat_1220.csv")
@@ -59,6 +61,8 @@ tree_data_app$POINT_X <- as.numeric(tree_data_app$POINT_X)
 
 tree_data_app$POINT_Y <- as.numeric(tree_data_app$POINT_Y)
 
+tree_data_app <- tree_data_app %>%
+  drop_na()
 
 # with help from this stackoverflow forum (https://stackoverflow.com/questions/52508902/convert-utm-to-lat-long-or-vice-versa), I realzied I have to convert the lat long to utm following this order
 tree_spatial = SpatialPoints(cbind(tree_data_app$POINT_X, tree_data_app$POINT_Y), proj4string=CRS("+proj=utm +zone=10 +datum=WGS84"))
@@ -121,3 +125,29 @@ ggplot() +
   geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
   theme_minimal()
 
+
+
+# Making updated data frame that contains only 1's (alive) or 0's (dead) for each tree for each year
+
+tree_spatial_cord_updated <- tree_spatial_cord %>%
+  mutate("1938correct" = case_when("1938" == "1" | "1938" == "2" ~ 1,
+                                   TRUE ~ 0
+  ))
+
+
+
+# Making function that selects only trees that are 1's (not 0's)
+
+# make df that only have the year columns
+tree_spatial_cord_updated_years <- tree_spatial_cord_updated %>%
+  select("1938", "1943", "1954", "1967", "1980", "1994", "2004", "2012", "2014" ,"2016", "2018", "2020")
+
+is_alive <- function(data, x) {
+  y <- ifelse(x == 1, 1, NA)
+  y <- drop_na(y)
+  return(y)
+}
+
+# testing it
+
+is_alive(data = tree_spatial_cord_updated_years, x = tree_spatial_cord_updated_years[])
