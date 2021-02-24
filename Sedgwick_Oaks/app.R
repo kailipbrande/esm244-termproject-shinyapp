@@ -28,8 +28,8 @@ ui <- fluidPage(theme = sedgwick_theme,
                         )),
                tabPanel("Widget 1",
                         sidebarLayout(
-                            sidebarPanel("Species",
-                                         radioButtons(inputId = "radio", label = "Select Species:",
+                            sidebarPanel(
+                                         radioButtons(inputId = "tree_species", label = "Select Species:",
                                                       choices = list("Valley Oak" = 1, "Blue Oak" = 2, "Coast Live Oak" = 3),
                                                       selected = 1),
 
