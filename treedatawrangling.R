@@ -121,3 +121,29 @@ ggplot() +
   geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
   theme_minimal()
 
+## changing those year columns to as.characters to pivot longer
+as.character(names(tree_spatial_cord)[4:15])
+
+# pivoting longer so widget 2 will work of map and mutate present column to only be 1 (alive) or 0 (dead)
+tree_pivot <-  tree_spatial_cord %>%
+  pivot_longer(cols = 4:15, names_to = "year", values_to = "present") %>%
+  mutate(present = case_when(
+    present == 2 ~ 1,
+    present == 1 ~ 1,
+    present == 0 ~ 0)) %>%
+  filter(present %in% c("1"))
+## not sure what the error means, but pivot and mutate seemed to work lol
+
+
+## converting to crs 4326
+tree_pivot <- st_as_sf(tree_pivot, crs = 4326)
+
+## making sure they both have same crs
+ca_counties <- st_transform(tree_pivot, st_crs(ca_counties))
+
+# want widget two graph to look something like this below where user can select the species..
+widget2graph <- ggplot() +
+  geom_sf(data = sb_county) +
+  geom_sf(data = tree_pivot, aes(fill = species, color = species)) +
+  theme_minimal()
+widget2graph

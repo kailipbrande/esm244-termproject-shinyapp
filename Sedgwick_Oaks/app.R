@@ -49,9 +49,10 @@ ui <- fluidPage(theme = sedgwick_theme,
                             sidebarPanel("Select Year",
                                          checkboxGroupInput(inputId = "pick_year",
                                                             label = "Select study year:",
-                                                            choices = unique(sedgwick$jan38))
+                                                            choices = unique(tree_pivot$year))
                                          ),
-                            mainPanel("Species Distribution")
+                            mainPanel("Species Distribution",
+                                      plotOutput("widget2plot"))
                         )
                         ),
                tabPanel("Widget 3",
@@ -94,7 +95,24 @@ ui <- fluidPage(theme = sedgwick_theme,
 )
 
 # Define server
-server <- function(input, output) {}
+server <- function(input, output) {
+
+  widget2reactive <- reactive({
+    tree_pivot %>%
+      filter(year %in% input$pick_year)
+
+  })
+
+    output$widget2plot <- renderPlot(
+      ggplot() +
+        geom_sf(data = sb_county) +
+        geom_sf(data = widget2reactive(), aes(fill = species, color = species)) +
+        theme_minimal()
+
+
+
+    )
+}
 
 
 # Run the application
