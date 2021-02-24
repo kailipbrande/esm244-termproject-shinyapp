@@ -1,5 +1,3 @@
-
-
 library(shiny)
 library(tidyverse)
 library(bslib)
@@ -22,15 +20,10 @@ ui <- fluidPage(theme = sedgwick_theme,
     navbarPage("Sedgwick Oaks",
                tabPanel("Overview",
                         titlePanel("Overview"),
-                        sidebarLayout(
-                          sidebarPanel(),
-                          mainPanel(
-                            h1("Summary"),
-                            p("This dataset is sourced from UCSB's Sedgwick Reserve, accessed with permission from professor Frank Davis at the La Kretz Research Center. This is a long-term dataset spanning over 80 years, containing demographic information about Sedgwick's resident oak population from 1938-2020."),
+                        h1("Summary"),
+                        p("This dataset is sourced from UCSB's Sedgwick Reserve, accessed with permission from professor Frank Davis at the La Kretz Research Center. This is a long-term dataset spanning over 80 years, containing demographic information about Sedgwick's resident oak population from 1938-2020."),
                         img(src = "sedgwickmap1.jpg", height = '500px', width = '800px')
-                          )
-                        )
-                        ),
+                          ),
                tabPanel("Widget 1",
                         sidebarLayout(
                             sidebarPanel("Species",
@@ -72,10 +65,13 @@ ui <- fluidPage(theme = sedgwick_theme,
                tabPanel("Widget 4",
                         sidebarLayout(
                             sidebarPanel("Select Time Period",
-                                                  sliderInput("slider2", label = h3("Slider Range"), min = 1938,
-                                                     max = 2020, value = c(1938, 2020), # sep = c(1938, 1943,
-                                                        # 1954, 1967, 1980, 1994, 2004, 2012, 2014, 2016, 2018, 2020)),
-                                                        format = "####"),
+                                                  sliderInput(inputId = "slider2", label = h3("Slider Range"),
+                                                              min = 1938, max = 2020,
+                                                              value = c(1938, 2020),
+                                                              sep = "", ticks = TRUE,
+                                                              # step = c(1938, 1943,
+                                                              #   1954, 1967, 1980, 1994, 2004, 2012, 2014, 2016, 2018, 2020),
+                                                              format = "####"),
 
                                                       hr(),
 
