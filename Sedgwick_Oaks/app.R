@@ -5,7 +5,9 @@ library(tidyverse)
 library(bslib)
 library(here)
 
-sedgwick <- read_csv(here("treedat_1220.csv"))
+source(here("treedatawrangling.R"))
+
+
 
 sedgwick_theme <- bs_theme(
   bg = "white",
@@ -20,7 +22,7 @@ sedgwick_theme <- bs_theme(
 ui <- fluidPage(theme = sedgwick_theme,
 
     navbarPage("Sedgwick Oaks",
-               tabPanel("Overview2",
+               tabPanel("Overview",
                         sidebarLayout(
                           sidebarPanel("This dataset is sourced from UCSB's Sedgwick Reserve,
                                        accessed with permission from professor Frank Davis at
@@ -35,13 +37,11 @@ ui <- fluidPage(theme = sedgwick_theme,
                tabPanel("Widget 1",
                         sidebarLayout(
                             sidebarPanel("Species",
-                                         radioButtons(inputId = "radio", label = "Select Species:",
-                                                      choices = list("Valley Oak" = 1, "Blue Oak" = 2, "Coast Live Oak" = 3),
-                                                      selected = 1),
-
-                                         hr(),
-                                         fluidRow(column(3, verbatimTextOutput("value")))),
-                            mainPanel("2020 Distribution")
+                                         radioButtons(inputId = "select_species", label = "Select Species:",
+                                                      choices = list( "QULO", "QUDO", "QUAG"),
+                                                      selected = 1)),
+                            mainPanel("2020 Distribution",
+                                      plotOutput(outputId = "species_plot")),
                         )
                         ),
                 tabPanel("Widget 2",
@@ -90,12 +90,23 @@ ui <- fluidPage(theme = sedgwick_theme,
                         )
                             ),
                             mainPanel("Number of live individuals"))
-)
-)
-)
+)))
+
 
 # Define server
 server <- function(input, output) {
+
+  widget1reactive <- reactive({
+    trees_2020 %>%
+      species == input$select_species
+
+  })
+
+  output$species_plot <- renderPlot({
+    ggplot(data = widget1reactive)+
+      geom_sf(color = "species")
+
+  })
 
   widget2reactive <- reactive({
     tree_pivot %>%
