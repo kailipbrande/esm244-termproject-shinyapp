@@ -150,30 +150,7 @@ widget2graph <- ggplot() +
   theme_minimal()
 widget2graph
 
-# Making updated data frame that contains only 1's (alive) or 0's (dead) for each tree for each year
 
-tree_spatial_cord_updated <- tree_spatial_cord %>%
-  mutate("1938correct" = case_when("1938" == "1" | "1938" == "2" ~ 1,
-                                   TRUE ~ 0
-  ))
-
-
-
-# Making function that selects only trees that are 1's (not 0's)
-
-# make df that only have the year columns
-tree_spatial_cord_updated_years <- tree_spatial_cord_updated %>%
-  select("1938", "1943", "1954", "1967", "1980", "1994", "2004", "2012", "2014" ,"2016", "2018", "2020")
-
-is_alive <- function(data, x) {
-  y <- ifelse(x == 1, 1, NA)
-  y <- drop_na(y)
-  return(y)
-}
-
-# testing it
-
-is_alive(data = tree_spatial_cord_updated_years, x = tree_spatial_cord_updated_years[])
 
 # Making a subset for widget 1
 trees_2020 <- tree_spatial_cord %>%
