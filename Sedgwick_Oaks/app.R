@@ -102,11 +102,11 @@ server <- function(input, output) {
 
   })
 
-  output$species_plot <- renderPlot(
+  output$species_plot <- renderPlot({
     ggplot(data = widget1reactive)+
       geom_sf(color = "species")
 
-  )
+  })
 
   widget2reactive <- reactive({
     tree_pivot %>%
@@ -114,22 +114,22 @@ server <- function(input, output) {
 
   })
 
-    output$widget2plot <- renderPlot(
+    output$widget2plot <- renderPlot({
       ggplot() +
         geom_sf(data = sb_county) +
         geom_sf(data = widget2reactive(), aes(fill = species, color = species)) +
         theme_minimal()
-      )
+      })
 
 
     widget3_reactive <- reactive({
       output$value <- renderPrint({ input$select })
     })
 
-    output$widget3_plot <- renderPlot(
-      ggplot(data = widget3_reactive, aes(x = output$value)) +
-        geom_col(fill = "blue")
-    )
+    output$widget3_plot <- renderPlot({
+      ggplot(data = widget3_reactive(), aes(x = year, y = count, fill = species), stat = "identity") +
+        geom_bar(stat="identity", width=.5, position = "dodge")
+    })
 
 
 
@@ -137,12 +137,10 @@ server <- function(input, output) {
         tree_pivot$range <- renderPrint({ input$slider2 })
       })
 
-      output$widget4_plot <- renderPlot(
-        ggplot() +
-          geom_sf(data = sb_county) +
-          geom_sf(data = widget4reactive(), aes(fill = species, color = species)) +
-          theme_minimal()
-      )
+      output$widget4_plot <- renderPlot({
+        ggplot(data = widget4reactive(), aes(x = range, y = count, fill = species)) +
+          geom_line()
+      })
 
 
     }
