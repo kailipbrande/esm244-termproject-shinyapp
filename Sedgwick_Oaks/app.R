@@ -20,7 +20,7 @@ sedgwick_theme <- bs_theme(
 ui <- fluidPage(theme = sedgwick_theme,
 
     navbarPage("Sedgwick Oaks",
-               tabPanel("Overview",
+               tabPanel("Overview2",
                         sidebarLayout(
                           sidebarPanel("This dataset is sourced from UCSB's Sedgwick Reserve,
                                        accessed with permission from professor Frank Davis at
