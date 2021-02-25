@@ -9,7 +9,7 @@ library(here)
 library(rgdal)
 
 
-tree_data <- read_csv("treedat_1220.csv")
+tree_data <- read_csv(here ("treedat_1220.csv"))
 
 
 # just getting the columns we need
@@ -174,3 +174,7 @@ is_alive <- function(data, x) {
 # testing it
 
 is_alive(data = tree_spatial_cord_updated_years, x = tree_spatial_cord_updated_years[])
+
+# Making a subset for widget 1
+trees_2020 <- tree_spatial_cord %>%
+  filter(`2020` != 0)
