@@ -7,8 +7,6 @@ library(here)
 
 source(here("treedatawrangling.R"))
 
-
-
 sedgwick_theme <- bs_theme(
   bg = "white",
   fg = "#1E8449",
@@ -49,7 +47,7 @@ ui <- fluidPage(theme = sedgwick_theme,
                             sidebarPanel("Select Year",
                                          checkboxGroupInput(inputId = "pick_year",
                                                             label = "Select study year:",
-                                                            choices = unique(tree_pivot$year))
+                                                            choices = levels(tree_melt$year))
                                          ),
                             mainPanel("Species Distribution",
                                       plotOutput("widget2plot"))
@@ -109,7 +107,7 @@ server <- function(input, output) {
   })
 
   widget2reactive <- reactive({
-    tree_pivot %>%
+    tree_melt %>%
       filter(year %in% input$pick_year)
 
   })

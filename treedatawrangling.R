@@ -6,7 +6,7 @@ library(sf)
 library(stringr)
 library(janitor)
 library(here)
-library(rgdal)
+library(reshape2)
 
 
 tree_data <- read_csv(here ("treedat_1220.csv"))
@@ -90,9 +90,6 @@ ca_counties <- st_transform(ca_counties, st_crs(tree_spatial_cord)) # transforme
 sb_county <- ca_counties %>%
   filter(name == "Santa Barbara")
 
-sb_depth <- tree_spatial_cord %>%
-  st_intersection(sb_county)
-
 # plot to take a look
 ggplot() +
   geom_sf(data = sb_county) +
@@ -126,55 +123,70 @@ ggplot() +
 ## changing those year columns to as.characters to pivot longer
 as.character(names(tree_spatial_cord)[4:15])
 
-# pivoting longer so widget 2 will work of map and mutate present column to only be 1 (alive) or 0 (dead)
-tree_pivot <-  tree_spatial_cord %>%
-  pivot_longer(cols = 4:15, names_to = "year", values_to = "present") %>%
+## pivot longer was clashing with sf layers so we're going to use reshape2::melt() instead :)
+# # pivoting longer so widget 2 will work of map and mutate present column to only be 1 (alive) or 0 (dead)
+# tree_pivot <-  tree_spatial_cord %>%
+#   pivot_longer(cols = 4:15, names_to = "year", values_to = "present") %>%
+#   mutate(present = case_when(
+#     present == 2 ~ 1,
+#     present == 1 ~ 1,
+#     present == 0 ~ 0)) %>%
+#   filter(present %in% c("1"))
+# ## not sure what the error means, but pivot and mutate seemed to work lol
+
+## using melt function here
+setDT(tree_spatial_cord)
+tree_melt <- melt(tree_spatial_cord,
+     id.vars = c("FID", "species", "TAG0305", "usecode", "geometry"),
+     measure.vars = 4:15,
+     variable.name = "year",
+     value.name = "present")  %>%
   mutate(present = case_when(
     present == 2 ~ 1,
     present == 1 ~ 1,
     present == 0 ~ 0)) %>%
   filter(present %in% c("1"))
-## not sure what the error means, but pivot and mutate seemed to work lol
 
-
-## converting to crs 4326
-tree_pivot <- st_as_sf(tree_pivot, crs = 4326)
+# ## converting to crs 4326
+tree_melt <- st_as_sf(tree_melt, crs = 4326)
 
 ## making sure they both have same crs
-ca_counties <- st_transform(tree_pivot, st_crs(ca_counties))
+ca_counties <- st_transform(tree_melt, st_crs(ca_counties))
 
 # want widget two graph to look something like this below where user can select the species..
 widget2graph <- ggplot() +
   geom_sf(data = sb_county) +
-  geom_sf(data = tree_pivot, aes(fill = species, color = species)) +
+  geom_sf(data = tree_melt, aes(fill = species, color = species)) +
   theme_minimal()
 widget2graph
 
-# Making updated data frame that contains only 1's (alive) or 0's (dead) for each tree for each year
 
-tree_spatial_cord_updated <- tree_spatial_cord %>%
-  mutate("1938correct" = case_when("1938" == "1" | "1938" == "2" ~ 1,
-                                   TRUE ~ 0
-  ))
+ # Making updated data frame that contains only 1's (alive) or 0's (dead) for each tree for each year
+
+ tree_spatial_cord_updated <- tree_spatial_cord %>%
+   mutate("1938correct" = case_when("1938" == "1" | "1938" == "2" ~ 1,
+                                    TRUE ~ 0
+   ))
 
 
 
-# Making function that selects only trees that are 1's (not 0's)
+# # Making function that selects only trees that are 1's (not 0's)
+#
+# # make df that only have the year columns
+ tree_spatial_cord_updated_years <- tree_spatial_cord_updated %>%
+   select("1938", "1943", "1954", "1967", "1980", "1994", "2004", "2012", "2014" ,"2016", "2018", "2020")
 
-# make df that only have the year columns
-tree_spatial_cord_updated_years <- tree_spatial_cord_updated %>%
-  select("1938", "1943", "1954", "1967", "1980", "1994", "2004", "2012", "2014" ,"2016", "2018", "2020")
+ is_alive <- function(data, x) {
+   y <- ifelse(x == 1, 1, NA)
+   y <- drop_na(y)
+   return(y)
+ }
 
-is_alive <- function(data, x) {
-  y <- ifelse(x == 1, 1, NA)
-  y <- drop_na(y)
-  return(y)
-}
-
-# testing it
+# # testing it
 
 is_alive(data = tree_spatial_cord_updated_years, x = tree_spatial_cord_updated_years[])
 
-# Making a subset for widget 1
+Making a subset for widget 1
 trees_2020 <- tree_spatial_cord %>%
   filter(`2020` != 0)
+
