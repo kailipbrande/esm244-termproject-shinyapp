@@ -91,9 +91,9 @@ sb_county <- ca_counties %>%
   filter(name == "Santa Barbara")
 
 # plot to take a look
-ggplot() +
-  geom_sf(data = sb_county) +
-  geom_sf(data = tree_spatial_cord, aes(color = TAG0305))
+# ggplot() +
+#   geom_sf(data = sb_county) +
+#   geom_sf(data = tree_spatial_cord, aes(color = TAG0305))
 
 
 ## Map of Sedgwick in California
@@ -109,16 +109,16 @@ lat_long_sedgwick <- data.frame(a,b) %>%
 ca_counties <- st_transform(ca_counties, st_crs(lat_long_sedgwick))
 
 ## Sedgwick's location in the state
-ggplot() +
-  geom_sf(data = ca_counties) +
-  geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
-  theme_minimal()
+# ggplot() +
+#   geom_sf(data = ca_counties) +
+#   geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
+#   theme_minimal()
 
 ## ## Sedgwick's location in the county
-ggplot() +
-  geom_sf(data = sb_county) +
-  geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
-  theme_minimal()
+# ggplot() +
+#   geom_sf(data = sb_county) +
+#   geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
+#   theme_minimal()
 
 ## changing those year columns to as.characters to pivot longer
 as.character(names(tree_spatial_cord)[4:15])
@@ -160,33 +160,6 @@ widget2graph <- ggplot() +
   theme_minimal()
 widget2graph
 
-
- # Making updated data frame that contains only 1's (alive) or 0's (dead) for each tree for each year
-
- tree_spatial_cord_updated <- tree_spatial_cord %>%
-   mutate("1938correct" = case_when("1938" == "1" | "1938" == "2" ~ 1,
-                                    TRUE ~ 0
-   ))
-
-
-
-# # Making function that selects only trees that are 1's (not 0's)
-#
-# # make df that only have the year columns
- tree_spatial_cord_updated_years <- tree_spatial_cord_updated %>%
-   select("1938", "1943", "1954", "1967", "1980", "1994", "2004", "2012", "2014" ,"2016", "2018", "2020")
-
- is_alive <- function(data, x) {
-   y <- ifelse(x == 1, 1, NA)
-   y <- drop_na(y)
-   return(y)
- }
-
-# # testing it
-
-is_alive(data = tree_spatial_cord_updated_years, x = tree_spatial_cord_updated_years[])
-
-Making a subset for widget 1
+# Making a subset for widget 1
 trees_2020 <- tree_spatial_cord %>%
   filter(`2020` != 0)
-

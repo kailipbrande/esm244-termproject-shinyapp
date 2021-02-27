@@ -1,11 +1,11 @@
-
-# =======
 library(shiny)
 library(tidyverse)
 library(bslib)
 library(here)
 
 source(here("treedatawrangling.R"))
+
+
 
 sedgwick_theme <- bs_theme(
   bg = "white",
@@ -47,7 +47,7 @@ ui <- fluidPage(theme = sedgwick_theme,
                             sidebarPanel("Select Year",
                                          checkboxGroupInput(inputId = "pick_year",
                                                             label = "Select study year:",
-                                                            choices = levels(tree_melt$year))
+                                                            choices = unique(tree_melt$year))
                                          ),
                             mainPanel("Species Distribution",
                                       plotOutput("widget2plot"))
@@ -112,16 +112,36 @@ server <- function(input, output) {
 
   })
 
-    output$widget2plot <- renderPlot(
+    output$widget2plot <- renderPlot({
       ggplot() +
         geom_sf(data = sb_county) +
         geom_sf(data = widget2reactive(), aes(fill = species, color = species)) +
         theme_minimal()
+      })
+
+
+    widget3_reactive <- reactive({
+      output$value <- renderPrint({ input$select })
+    })
+
+    output$widget3_plot <- renderPlot({
+      ggplot(data = widget3_reactive(), aes(x = year, y = count, fill = species), stat = "identity") +
+        geom_bar(stat="identity", width=.5, position = "dodge")
+    })
 
 
 
-    )
-}
+     widget4_reactive <- reactive({
+        tree_pivot$range <- renderPrint({ input$slider2 })
+      })
+
+      output$widget4_plot <- renderPlot({
+        ggplot(data = widget4reactive(), aes(x = range, y = count, fill = species)) +
+          geom_line()
+      })
+
+
+    }
 
 
 # Run the application
