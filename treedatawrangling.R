@@ -6,7 +6,7 @@ library(sf)
 library(stringr)
 library(janitor)
 library(here)
-library(rgdal)
+library(reshape2)
 
 
 tree_data <- read_csv(here ("treedat_1220.csv"))
@@ -90,13 +90,10 @@ ca_counties <- st_transform(ca_counties, st_crs(tree_spatial_cord)) # transforme
 sb_county <- ca_counties %>%
   filter(name == "Santa Barbara")
 
-sb_depth <- tree_spatial_cord %>%
-  st_intersection(sb_county)
-
 # plot to take a look
-ggplot() +
-  geom_sf(data = sb_county) +
-  geom_sf(data = tree_spatial_cord, aes(color = TAG0305))
+# ggplot() +
+#   geom_sf(data = sb_county) +
+#   geom_sf(data = tree_spatial_cord, aes(color = TAG0305))
 
 
 ## Map of Sedgwick in California
@@ -112,45 +109,56 @@ lat_long_sedgwick <- data.frame(a,b) %>%
 ca_counties <- st_transform(ca_counties, st_crs(lat_long_sedgwick))
 
 ## Sedgwick's location in the state
-ggplot() +
-  geom_sf(data = ca_counties) +
-  geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
-  theme_minimal()
+# ggplot() +
+#   geom_sf(data = ca_counties) +
+#   geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
+#   theme_minimal()
 
 ## ## Sedgwick's location in the county
-ggplot() +
-  geom_sf(data = sb_county) +
-  geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
-  theme_minimal()
+# ggplot() +
+#   geom_sf(data = sb_county) +
+#   geom_sf(data = lat_long_sedgwick, aes(color = Site), size = 3) +
+#   theme_minimal()
 
 ## changing those year columns to as.characters to pivot longer
 as.character(names(tree_spatial_cord)[4:15])
 
-# pivoting longer so widget 2 will work of map and mutate present column to only be 1 (alive) or 0 (dead)
-tree_pivot <-  tree_spatial_cord %>%
-  pivot_longer(cols = 4:15, names_to = "year", values_to = "present") %>%
+## pivot longer was clashing with sf layers so we're going to use reshape2::melt() instead :)
+# # pivoting longer so widget 2 will work of map and mutate present column to only be 1 (alive) or 0 (dead)
+# tree_pivot <-  tree_spatial_cord %>%
+#   pivot_longer(cols = 4:15, names_to = "year", values_to = "present") %>%
+#   mutate(present = case_when(
+#     present == 2 ~ 1,
+#     present == 1 ~ 1,
+#     present == 0 ~ 0)) %>%
+#   filter(present %in% c("1"))
+# ## not sure what the error means, but pivot and mutate seemed to work lol
+
+## using melt function here
+setDT(tree_spatial_cord)
+tree_melt <- melt(tree_spatial_cord,
+     id.vars = c("FID", "species", "TAG0305", "usecode", "geometry"),
+     measure.vars = 4:15,
+     variable.name = "year",
+     value.name = "present")  %>%
   mutate(present = case_when(
     present == 2 ~ 1,
     present == 1 ~ 1,
     present == 0 ~ 0)) %>%
   filter(present %in% c("1"))
-## not sure what the error means, but pivot and mutate seemed to work lol
 
-
-## converting to crs 4326
-tree_pivot <- st_as_sf(tree_pivot, crs = 4326)
+# ## converting to crs 4326
+tree_melt <- st_as_sf(tree_melt, crs = 4326)
 
 ## making sure they both have same crs
-ca_counties <- st_transform(tree_pivot, st_crs(ca_counties))
+ca_counties <- st_transform(tree_melt, st_crs(ca_counties))
 
 # want widget two graph to look something like this below where user can select the species..
 widget2graph <- ggplot() +
   geom_sf(data = sb_county) +
-  geom_sf(data = tree_pivot, aes(fill = species, color = species)) +
+  geom_sf(data = tree_melt, aes(fill = species, color = species)) +
   theme_minimal()
 widget2graph
-
-
 
 # Making a subset for widget 1
 trees_2020 <- tree_spatial_cord %>%
