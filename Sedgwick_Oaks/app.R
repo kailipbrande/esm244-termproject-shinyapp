@@ -96,13 +96,13 @@ server <- function(input, output) {
 
   widget1reactive <- reactive({
     trees_2020 %>%
-      species == input$select_species
+      filter(species == input$select_species)
 
   })
 
   output$species_plot <- renderPlot({
     ggplot(data = widget1reactive)+
-      geom_sf(color = "species")
+      geom_sf()
 
   })
 
