@@ -7,6 +7,7 @@ library(stringr)
 library(janitor)
 library(here)
 library(reshape2)
+library(data.table)
 
 
 tree_data <- read_csv(here ("treedat_1220.csv"))
@@ -161,5 +162,6 @@ widget2graph <- ggplot() +
 widget2graph
 
 # Making a subset for widget 1
-trees_2020 <- tree_spatial_cord %>%
-  filter(`2020` != 0)
+trees_2020 <- tree_melt %>%
+  filter(year == 2020) %>%
+  select(species, geometry)
