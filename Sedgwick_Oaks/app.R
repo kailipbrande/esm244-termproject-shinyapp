@@ -76,9 +76,7 @@ ui <- fluidPage(theme = sedgwick_theme,
                                                               min = 1938, max = 2020,
                                                               value = c(1938, 2020),
                                                               sep = "", ticks = TRUE,
-                                                              # step = c(1938, 1943,
-                                                              #   1954, 1967, 1980, 1994, 2004, 2012, 2014, 2016, 2018, 2020),
-                                                              format = "####"),
+                                                              ),
 
                                                       hr(),
 
