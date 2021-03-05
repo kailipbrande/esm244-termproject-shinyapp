@@ -130,7 +130,7 @@ server <- function(input, output) {
 
 
      widget4_reactive <- reactive({
-        tree_pivot$range <- renderPrint({ input$slider2 })
+        tree_melt$range <- renderPrint({ input$slider2 })
       })
 
       output$widget4_plot <- renderPlot({
