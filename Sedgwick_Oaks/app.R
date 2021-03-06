@@ -124,9 +124,12 @@ server <- function(input, output) {
 
 
 
+
+
     # widget4_reactive <- reactive({
     #    tree_pivot$range <- renderPrint({ input$slider2 })
     #  })
+
 
     #  output$widget4_plot <- renderPlot({
     #    ggplot(data = widget4reactive(), aes(x = range, y = count, fill = species)) +
