@@ -22,71 +22,65 @@ ui <- fluidPage(theme = sedgwick_theme,
     navbarPage("Sedgwick Oaks",
                tabPanel("Overview",
                         sidebarLayout(
-                          sidebarPanel("This dataset is sourced from UCSB's Sedgwick Reserve,
-                                       accessed with permission from professor Frank Davis at
-                                       the La Kretz Research Center. This is a long-term dataset
-                                       spanning over 80 years, containing demographic information
-                                       about Sedgwick's resident oak population from 1938-2020."),
-                          mainPanel(
-                        img(src = "sedgwickmap1.jpg", height = '500px', width = '800px')
+                          sidebarPanel("This dataset is sourced from UCSB's Sedgwick Reserve, accessed with permission from professor Frank Davis at the La Kretz Research Center. This is a long-term dataset spanning over 80 years, containing demographic information about Sedgwick's resident oak population from 1938-2020."),
+                          mainPanel(img(src = "sedgwickmap1.jpg", height = '500px', width = '800px')
                           )
                         )
                         ),
                tabPanel("Widget 1",
                         sidebarLayout(
-                            sidebarPanel("Species",
-                                         radioButtons(inputId = "select_species", label = "Select Species:",
-                                                      choices = list( "QULO", "QUDO", "QUAG"),
-                                                      selected = 1)),
+                            sidebarPanel(
+                                         radioButtons(inputId = "select_species", label = "Select Species:", choices = list( "QULO", "QUDO", "QUAG"), selected = "QULO")),
                             mainPanel("2020 Distribution",
-                                      plotOutput(outputId = "species_plot")),
+                                      plotOutput(outputId = "species_plot"))
                         )
                         ),
-                tabPanel("Widget 2",
-                        sidebarLayout(
-                            sidebarPanel("Select Year",
-                                         checkboxGroupInput(inputId = "pick_year",
-                                                            label = "Select study year:",
-                                                            choices = unique(tree_melt$year))
-                                         ),
-                            mainPanel("Species Distribution",
-                                      plotOutput("widget2plot"))
-                        )
-                        ),
-               tabPanel("Widget 3",
-                        sidebarLayout(
-                            sidebarPanel("Select Year",
-                                         selectInput("select", label = h3("Select Year"),
-                                                     choices = list("1938" = 1938, "1943" = 1943, "1954" = 1954,
-                                                                    "1967" = 1967, "1980" = 1980, "1994" = 1994,
-                                                                    "2004" = 2004, "2012" = 2012, "2014" = 2014,
-                                                                    "2016" = 2016, "2018" = 2018, "2020" = 2020),
-                                                     selected = 1),
 
-                                         hr(),
-                                         fluidRow(column(12, verbatimTextOutput("value")))
-                            ),
-                            mainPanel("Number of live individuals")
-                        )
-                        ),
-               tabPanel("Widget 4",
-                        sidebarLayout(
-                            sidebarPanel("Select Time Period",
-                                                  sliderInput(inputId = "slider2", label = h3("Slider Range"),
-                                                              min = 1938, max = 2020,
-                                                              value = c(1938, 2020),
-                                                              sep = "", ticks = TRUE,
-                                                              ),
 
-                                                      hr(),
+#                tabPanel("Widget 2",
+#                        sidebarLayout(
+#                          sidebarPanel("Select Year",checkboxGroupInput(inputId = "pick_year",
+#                                                          label = "Select study year:",
+               #                                                           choices = unique(tree_melt$year))
+               #                                        ),
+               #                            mainPanel("Species Distribution",
+               #                                     plotOutput("widget2plot"))
+               #                      )
+               #                     )
 
-                        fluidRow(
-                          column(12, verbatimTextOutput("value")),
-                          column(12, verbatimTextOutput("range"))
-                        )
-                            ),
-                            mainPanel("Number of live individuals"))
-)))
+
+              tabPanel("Widget 3",
+                      sidebarLayout(
+                            sidebarPanel(
+                                         selectInput(inputId = "select_year", label = "Select Year:", choices = list("1938" = 1938, "1943" = 1943, "1954" = 1954, "1967" = 1967, "1980" = 1980, "1994" = 1994, "2004" = 2004, "2012" = 2012, "2014" = 2014, "2016" = 2016, "2018" = 2018, "2020" = 2020), selected = 1)),
+                            mainPanel("Number of live individuals",plotOutput(outputId = "widget3_plot")))
+               )
+    ))
+
+
+
+
+
+
+
+     #          tabPanel("Widget 4",
+     #                   sidebarLayout(
+     #                       sidebarPanel("Select Time Period",
+    #                                              sliderInput(inputId = "slider2", label = h3("Slider Range"),
+      #                                                        min = 1938, max = 2020,
+     #                                                         value = c(1938, 2020),
+     #                                                         sep = "", ticks = TRUE,
+      #                                                        ),
+#
+     #                                                 hr(),
+#
+    #                    fluidRow(
+     #                     column(12, verbatimTextOutput("value")),
+     #                     column(12, verbatimTextOutput("range"))
+     #                   )
+     #                       ),
+     #                       mainPanel("Number of live individuals"))
+#)
 
 
 # Define server
@@ -95,48 +89,52 @@ server <- function(input, output) {
   widget1reactive <- reactive({
     trees_2020 %>%
       filter(species == input$select_species)
-
   })
 
   output$species_plot <- renderPlot({
-    ggplot(data = widget1reactive)+
-      geom_sf()
+    ggplot()+
+      geom_sf(data = widget1reactive())+
+      theme_minimal()
 
   })
 
-  widget2reactive <- reactive({
-    tree_melt %>%
-      filter(year %in% input$pick_year)
+  #widget2reactive <- reactive({
+  #  tree_melt %>%
+  #    filter(year %in% input$pick_year)
 
-  })
+ # })
 
-    output$widget2plot <- renderPlot({
-      ggplot() +
-        geom_sf(data = sb_county) +
-        geom_sf(data = widget2reactive(), aes(fill = species, color = species)) +
-        theme_minimal()
-      })
+   # output$widget2plot <- renderPlot({
+  #    ggplot() +
+   #     geom_sf(data = sb_county) +
+   #     geom_sf(data = widget2reactive(), aes(fill = species, color = species)) +
+   #     theme_minimal()
+   #   })
 
 
     widget3_reactive <- reactive({
-      output$value <- renderPrint({ input$select })
+      widget_3 %>%
+        filter(year == input$select_year)
     })
 
     output$widget3_plot <- renderPlot({
-      ggplot(data = widget3_reactive(), aes(x = year, y = count, fill = species), stat = "identity") +
+      ggplot(data = widget3_reactive(), aes(x = year, y = n, fill = species)) +
         geom_bar(stat="identity", width=.5, position = "dodge")
     })
 
 
 
-     widget4_reactive <- reactive({
-        tree_melt$range <- renderPrint({ input$slider2 })
-      })
 
-      output$widget4_plot <- renderPlot({
-        ggplot(data = widget4reactive(), aes(x = range, y = count, fill = species)) +
-          geom_line()
-      })
+
+    # widget4_reactive <- reactive({
+    #    tree_pivot$range <- renderPrint({ input$slider2 })
+    #  })
+
+
+    #  output$widget4_plot <- renderPlot({
+    #    ggplot(data = widget4reactive(), aes(x = range, y = count, fill = species)) +
+   #       geom_line()
+   #   })
 
 
     }
