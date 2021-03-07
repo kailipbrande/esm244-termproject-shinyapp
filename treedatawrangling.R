@@ -55,7 +55,8 @@ tree_data_app <- tree_data_app %>%
   drop_na()
 
 #need to convert point x and y to numeric values to then be able to convert to coordinates
-options(digits = 11) # this is so converting to a numeric value keeps the post-decimal value
+options(digits = 8) # this is so converting to a numeric value keeps the post-decimal value
+
 tree_data_app$POINT_X <- as.numeric(tree_data_app$POINT_X)
 
 tree_data_app$POINT_Y <- as.numeric(tree_data_app$POINT_Y)
