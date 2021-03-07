@@ -42,17 +42,17 @@ ui <- fluidPage(theme = sedgwick_theme,
                                       plotOutput(outputId = "species_plot")),
                         )
                         ),
-                tabPanel("Widget 2",
-                        sidebarLayout(
-                            sidebarPanel("Select Year",
-                                         checkboxGroupInput(inputId = "pick_year",
-                                                            label = "Select study year:",
-                                                            choices = unique(tree_melt$year))
-                                         ),
-                            mainPanel("Species Distribution",
-                                      plotOutput("widget2plot"))
-                        )
-                        ),
+                # tabPanel("Widget 2",
+                #         sidebarLayout(
+                #             sidebarPanel("Select Year",
+                #                          checkboxGroupInput(inputId = "pick_year",
+                #                                             label = "Select study year:",
+                #                                             choices = unique(tree_melt$year))
+                #                          ),
+                #             mainPanel("Species Distribution",
+                #                       plotOutput("widget2plot"))
+                #         )
+                #         ),
                tabPanel("Widget 3",
                         sidebarLayout(
                             sidebarPanel("Select Year",
@@ -104,18 +104,18 @@ server <- function(input, output) {
 
   })
 
-  widget2reactive <- reactive({
-    tree_melt %>%
-      filter(year %in% input$pick_year)
-
-  })
-
-    output$widget2plot <- renderPlot({
-      ggplot() +
-        geom_sf(data = sb_county) +
-        geom_sf(data = widget2reactive(), aes(fill = species, color = species)) +
-        theme_minimal()
-      })
+  # widget2reactive <- reactive({
+  #   tree_melt %>%
+  #     filter(year %in% input$pick_year)
+  #
+  # })
+  #
+  #   output$widget2plot <- renderPlot({
+  #     ggplot() +
+  #       geom_sf(data = sb_county) +
+  #       geom_sf(data = widget2reactive(), aes(fill = species, color = species)) +
+  #       theme_minimal()
+  #     })
 
 
     widget3_reactive <- reactive({

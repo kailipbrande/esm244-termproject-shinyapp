@@ -8,6 +8,7 @@ library(janitor)
 library(here)
 library(reshape2)
 library(data.table)
+library(DT)
 
 
 tree_data <- read_csv(here ("treedat_1220.csv"))
@@ -166,3 +167,7 @@ widget2graph
 trees_2020 <- tree_melt %>%
   filter(year == 2020) %>%
   select(species, geometry)
+
+# Making a subset for widget 3
+widget_3 <- tree_melt %>%
+  count(species, year)
