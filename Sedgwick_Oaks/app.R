@@ -54,8 +54,7 @@ ui <- fluidPage(theme = sedgwick_theme,
                             sidebarPanel(
                                          selectInput(inputId = "select_year", label = "Select Year:", choices = list("1938" = 1938, "1943" = 1943, "1954" = 1954, "1967" = 1967, "1980" = 1980, "1994" = 1994, "2004" = 2004, "2012" = 2012, "2014" = 2014, "2016" = 2016, "2018" = 2018, "2020" = 2020), selected = 1)),
                             mainPanel("Number of live individuals",plotOutput(outputId = "widget3_plot")))
-               )
-    ))
+               ),
 
 
 
@@ -63,24 +62,25 @@ ui <- fluidPage(theme = sedgwick_theme,
 
 
 
-     #          tabPanel("Widget 4",
-     #                   sidebarLayout(
-     #                       sidebarPanel("Select Time Period",
-    #                                              sliderInput(inputId = "slider2", label = h3("Slider Range"),
-      #                                                        min = 1938, max = 2020,
-     #                                                         value = c(1938, 2020),
-     #                                                         sep = "", ticks = TRUE,
-      #                                                        ),
-#
-     #                                                 hr(),
-#
-    #                    fluidRow(
-     #                     column(12, verbatimTextOutput("value")),
-     #                     column(12, verbatimTextOutput("range"))
-     #                   )
-     #                       ),
-     #                       mainPanel("Number of live individuals"))
-#)
+
+               tabPanel("Widget 4",
+                        sidebarLayout(
+                            sidebarPanel(sliderInput(inputId = "slider2", label = h3("Slider Range"),
+                                                              min = 1938, max = 2020,
+                                                              value = c(1938, 2020),
+                                                              sep = "", ticks = TRUE
+                                                              ),
+
+                                                      hr(),
+
+                        fluidRow(
+                          column(4, verbatimTextOutput("value")),
+                          column(4, verbatimTextOutput("range"))
+                        )
+                            ),
+                            mainPanel("Number of live individuals"))
+)
+))
 
 
 # Define server
@@ -126,15 +126,28 @@ server <- function(input, output) {
 
 
 
-    # widget4_reactive <- reactive({
-    #    tree_pivot$range <- renderPrint({ input$slider2 })
+     widget4_reactive <- reactive({
+        #output$range <- renderPrint({ input$slider2 })
+
+        widget_4 %>%
+          filter(year >= input$slider2[1], year <= input$slider2[2])
+         })
+
+
+      output$widget4_plot <- renderPlot({
+        ggplot(data = widget4reactive(), aes(x = year, y = count, color = species, group = species)) +
+          geom_point() +
+          geom_line()
+      })
+
+     # output$widget4_plot <- renderPlot({      # combined version
+
+      #  plot <- widget_4 %>%
+       #   filter(year >= input$slider2[1], year <= input$slider2[2]) %>%
+        #  ggplot( aes(x=year, y=count)) +
+         # geom_line(fill = species)
+      #  return(plot)
     #  })
-
-
-    #  output$widget4_plot <- renderPlot({
-    #    ggplot(data = widget4reactive(), aes(x = range, y = count, fill = species)) +
-   #       geom_line()
-   #   })
 
 
     }
