@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ESRI_ItemInformation Culture='en-US'>
+<name>41b4381f2d0342d787cbc60bbcfae53a</name>
+<guid>14C5DA9C-148B-43DE-999F-1CE3049ACBF0</guid>
+<catalogpath></catalogpath>
+<snippet></snippet>
+<description>&lt;div&gt;&lt;div&gt;&lt;div&gt;&lt;p&gt; Vector file (Polygon) representing Sedgwick Reserve boundary. Produced by Bill Kuhn (UCSB BIogeography Lab) walking the property fenceline with handheld GPS unit. 10% of fenceline that was difficult to access by foot was added using 1993 digital orthophoto. This is not a legal boundary for the reserve but can be used to show the general extent and location of Sedgwick Reserve. &lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+This dataset was uploaded to Data Basin and is available with additional information at: /datasets/41b4381f2d0342d787cbc60bbcfae53a</description>
+<summary></summary>
+<title>41b4381f2d0342d787cbc60bbcfae53a</title>
+<tags></tags>
+<type>Layer Package</type>
+<typekeywords>
+<typekeyword>File Geodatabase Feature Class</typekeyword>
+<typekeyword>Layer Package</typekeyword>
+<typekeyword>Data</typekeyword>
+<typekeyword>ArcMap</typekeyword>
+<typekeyword>ArcGlobe</typekeyword>
+<typekeyword>ArcGIS Explorer</typekeyword>
+<typekeyword>lpk</typekeyword>
+</typekeywords>
+<thumbnail>thumbnail/thumbnail.png</thumbnail>
+<documentation></documentation>
+<url></url>
+<datalastmodifiedtime></datalastmodifiedtime>
+<extent>
+<xmin>-120.071719163564</xmin>
+<ymin>34.6787303875651</ymin>
+<xmax>-120.011755862584</xmax>
+<ymax>34.7439984156491</ymax>
+</extent>
+<spatialreference>NAD_1983_California_Teale_Albers</spatialreference>
+<accessinformation>Bill Kuhn, Frank Davis&lt;br/&gt;University of California, Santa Barbara</accessinformation>
+<licenseinfo></licenseinfo>
+</ESRI_ItemInformation>
