@@ -129,14 +129,29 @@ server <- function(input, output) {
     #
     #
     #
-    #  widget4_reactive <- reactive({
-    #     tree_pivot$range <- renderPrint({ input$slider2 })
-    #   })
-    #
-    #   output$widget4_plot <- renderPlot({
-    #     ggplot(data = widget4reactive(), aes(x = range, y = count, fill = species)) +
-    #       geom_line()
-    #   })
+     widget4_reactive <- reactive({
+        #output$range <- renderPrint({ input$slider2 })
+
+        widget_4 %>%
+          filter(year >= input$slider2[1], year <= input$slider2[2])
+         })
+
+
+      output$widget4_plot <- renderPlot({
+        ggplot(data = widget4reactive(), aes(x = year, y = count, color = species, group = species)) +
+          geom_point() +
+          geom_line()
+      })
+
+     # output$widget4_plot <- renderPlot({      # combined version
+
+      #  plot <- widget_4 %>%
+       #   filter(year >= input$slider2[1], year <= input$slider2[2]) %>%
+        #  ggplot( aes(x=year, y=count)) +
+         # geom_line(fill = species)
+      #  return(plot)
+    #  })
+
 
 
     }

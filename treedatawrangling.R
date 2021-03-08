@@ -171,3 +171,15 @@ trees_2020 <- tree_melt %>%
 # Making a subset for widget 3
 widget_3 <- tree_melt %>%
   count(species, year)
+
+# Making a subset for widget 4
+widget_4 <- tree_melt %>%
+  group_by(species, year) %>%
+  summarize(count = n())
+
+widget_4 <- as.data.frame(widget_4) %>%
+  select(species, year, count)
+
+widget_4$year <- as.character(widget_4$year)
+
+widget_4$count <- as.numeric(as.character(widget_4$count))
