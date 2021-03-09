@@ -34,14 +34,12 @@ ui <- fluidPage(theme = sedgwick_theme,
                         ),
                tabPanel("Widget 1",
                         sidebarLayout(
-                            sidebarPanel("Species",
-                                         radioButtons(inputId = "select_species", label = "Select Species:",
-                                                      choices = list( "QULO", "QUDO", "QUAG"),
-                                                      selected = 1)),
-                            mainPanel("2020 Distribution",
-                                      plotOutput(outputId = "species_plot")),
+                          sidebarPanel(
+                            radioButtons(inputId = "select_species", label = "Select Species:", choices = list( "QULO", "QUDO", "QUAG"), selected = "QULO")),
+                          mainPanel("2020 Distribution",
+                                    plotOutput(outputId = "species_plot"))
                         )
-                        ),
+               ),
                tabPanel("Widget 2",
                         sidebarLayout(
                           sidebarPanel("Select Year",
@@ -53,22 +51,13 @@ ui <- fluidPage(theme = sedgwick_theme,
                                     plotOutput("widget2plot")),
                         )
                ),
-                tabPanel("Widget 3",
-                         sidebarLayout(
-                             sidebarPanel("Select Year",
-                                          selectInput("select", label = h3("Select Year"),
-                                                      choices = list("1938" = 1938, "1943" = 1943, "1954" = 1954,
-                                                                     "1967" = 1967, "1980" = 1980, "1994" = 1994,
-                                                                     "2004" = 2004, "2012" = 2012, "2014" = 2014,
-                                                                     "2016" = 2016, "2018" = 2018, "2020" = 2020),
-                                                      selected = 1),
+               tabPanel("Widget 3",
+                        sidebarLayout(
+                          sidebarPanel(
+                            selectInput(inputId = "select_year", label = "Select Year:", choices = list("1938" = 1938, "1943" = 1943, "1954" = 1954, "1967" = 1967, "1980" = 1980, "1994" = 1994, "2004" = 2004, "2012" = 2012, "2014" = 2014, "2016" = 2016, "2018" = 2018, "2020" = 2020), selected = 1)),
+                          mainPanel("Number of live individuals",plotOutput(outputId = "widget3_plot")))
+               ),
 
-                                          hr(),
-                                          fluidRow(column(12, verbatimTextOutput("value")))
-                             ),
-                             mainPanel("Number of live individuals")
-                         )
-                         ),
                 tabPanel("Widget 4",
                          sidebarLayout(
                              sidebarPanel("Select Time Period",
@@ -82,6 +71,7 @@ ui <- fluidPage(theme = sedgwick_theme,
  )
 ))
 )
+
 
 
 # Define server
@@ -112,14 +102,16 @@ server <- function(input, output) {
   })
 
 
-     widget3_reactive <- reactive({
-       output$value <- renderPrint({ input$select })
-     })
+    widget3_reactive <- reactive({
+      widget_3 %>%
+        filter(year == input$select_year)
+    })
 
-     output$widget3_plot <- renderPlot({
-       ggplot(data = widget3_reactive(), aes(x = year, y = count, fill = species), stat = "identity") +
-         geom_bar(stat="identity", width=.5, position = "dodge")
-     })
+
+    output$widget3_plot <- renderPlot({
+      ggplot(data = widget3_reactive(), aes(x = year, y = n, fill = species)) +
+        geom_bar(stat="identity", width=.5, position = "dodge")
+    })
 
 
 
