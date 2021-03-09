@@ -50,7 +50,7 @@ ui <- fluidPage(theme = sedgwick_theme,
                                                           choices = unique(tree_melt$year),
                                        )),
                           mainPanel("Species Distribution",
-                                    plotOutput("widget2plot")),
+                                    plotOutput("widget2plot", height = "200%", width = "200%")),
                         )
                ),
                 tabPanel("Widget 3",
@@ -107,9 +107,13 @@ server <- function(input, output) {
 
   output$widget2plot <- renderPlot({
     ggplot() +
-      geom_sf(data = widget2reactive(), aes(fill = species, color = species)) +
-      theme_minimal()
-  })
+      geom_sf(data = widget2reactive(), aes(color = species), size = 3) +
+      theme_minimal() +
+      labs(x = "Longitude", y = "Latitude") +
+      scale_colour_discrete(name = "Species:") +
+      scale_color_brewer(palette = "Dark2") +
+      theme(legend.position="top")
+  }, height = 800, width = 1300)
 
 
      widget3_reactive <- reactive({

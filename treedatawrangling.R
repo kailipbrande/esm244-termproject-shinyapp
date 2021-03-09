@@ -158,7 +158,6 @@ ca_counties <- st_transform(tree_melt, st_crs(ca_counties))
 
 # want widget two graph to look something like this below where user can select the species..
 widget2graph <- ggplot() +
-  geom_sf(data = sb_county) +
   geom_sf(data = tree_melt, aes(fill = species, color = species)) +
   theme_minimal()
 widget2graph
