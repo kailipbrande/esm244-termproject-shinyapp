@@ -111,7 +111,7 @@ server <- function(input, output) {
       theme_minimal() +
       labs(x = "Longitude", y = "Latitude") +
       scale_colour_discrete(name = "Species:") +
-      scale_color_brewer(palette = "Dark2") +
+      scale_color_brewer(palette = "Dark2" ) +
       theme(legend.position="top")
   }, height = 800, width = 1300)
 
